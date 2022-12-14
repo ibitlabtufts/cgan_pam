@@ -1,7 +1,7 @@
 # cgan_pam
 There are two deep learning networks:
-Denoising U-Net
-Denoising conditional GAN - Pix2Pix model with some modifications into the loss function, and dropout layers
+Speedup_PAM U-Net
+Speedup_PAM conditional GAN - Pix2Pix model with some modifications into the loss function, and dropout layers
 
 Training dataset was captured from the Acoustic-X LED system which is different from the testing AR-PAM system.
 
