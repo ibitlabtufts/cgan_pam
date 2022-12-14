@@ -1,0 +1,32 @@
+% To be done in MATLAB
+
+% Read the images; If the image names follow a series, then we can loop around all the images without changing any code.
+file_name = "example.png";
+I = imread(file_name);
+I = im2double(I);
+
+% Select the ROI (We selected 10 x 10)
+% Assume the example ROI is: (100:109,70:79)
+y_coord_range_roi = 100:109;
+x_coord_range_roi = 70:79;
+
+mu_roi = mean(mean(I(y_coord_range_roi,x_coord_range_roi)));
+std_roi = std(std(I(y_coord_range_roi,x_coord_range_roi)));
+
+% Select the background (We selected 10 x 10)
+% Assume the example background is: (180:189,65:74)
+y_coord_range_bg = 180:189;
+x_coord_range_bg = 65:74;
+
+mu_bg = mean(mean(I(y_coord_range_bg,x_coord_range_bg)));
+std_bg = std(std(I(y_coord_range_bg,x_coord_range_bg)));
+
+%% Calculate the SNR
+%% SNR = 20 * log (mean_roi / standard_dev_bg);
+SNR_val = 20 * log(mu_roi / std_bg);
+
+%% Calculate the CNR
+%% CNR = standard_dev_roi / standard_dev_bg;
+CNR_val = std_roi/std_bg;
+
+fprintf('%4.2f\t %4.2f\n',SNR_val, CNR_val);
