@@ -1,0 +1,61 @@
+## To be run in python
+
+!pip install bm3d
+import matplotlib.pyplot as plt
+from skimage import io, img_as_float
+from skimage import img_as_ubyte
+from skimage.metrics import peak_signal_noise_ratio
+import numpy as np
+import bm3d
+from skimage.restoration import denoise_nl_means, estimate_sigma
+import os
+
+"""
+sigma_psd - noise standard deviation
+stage_arg: Determines whether to perform hard-thresholding or Wiener filtering.
+stage_arg = BM3DStages.HARD_THRESHOLDING or BM3DStages.ALL_STAGES (slow but powerful)
+All stages performs both hard thresholding and Wiener filtering. 
+"""
+
+file_dir = "sample_data/test/"
+save_dir = "sample_data/save/"
+
+indx = 1;
+for filename in os.listdir(file_dir):
+    fl_name = os.path.join(file_dir,filename)
+    noisy_img = img_as_float(io.imread(fl_name))
+    sigma_est = np.mean(estimate_sigma(noisy_img, multichannel=True))
+    BM3D_denoised_image = bm3d.bm3d(noisy_img, sigma_psd = sigma_est, stage_arg=bm3d.BM3DStages.ALL_STAGES)
+    save_name = os.path.join(save_dir,filename)
+    io.imsave(save_name,(BM3D_denoised_image))
+
+!zip -r /content/sample_data/bm3d_test.zip /content/sample_data/save
+from google.colab import files
+files.download("/content/sample_data/bm3d_test.zip")
+
+
+%% To be run in Matlab
+
+% Savitzky-Golay filtering:
+
+num_images = 32;
+for ii = 1:num_images
+    nm = num2str(ii) + ".png";
+    om = num2str(ii) + "_sg_filtered.png";
+    I = im2double(imread(nm));
+    Isg = sgolayfilt(I,3,11); % We took polynomial order as 3 and the window frame length as 11. This is done after hit and trial method.
+    imshow(Isg);
+    imwrite(Isg,om);
+end
+
+% Wiener filtering:
+
+num_images = 32;
+for ii = 1:num_images
+    nm = num2str(ii) + ".png";
+    om = num2str(ii) + "_sg_filtered.png";
+    I = im2double(imread(nm));
+    Iwn = wiener2(I,[5 5]); %% [5 5] filter was done after hit and trail also. Can change according to the requirement.
+    imshow(Iwn);
+    imwrite(Iwn,om);
+end
